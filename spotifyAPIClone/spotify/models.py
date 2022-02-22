@@ -35,8 +35,8 @@ class Album(models.Model):
 
 
 class Track(models.Model):
-    albumtypes=(('A','Album'),('S','Single'),('C','Compilation'))
-    albumtypes=models.CharField(max_length=1,choices=albumtypes)
+    albumtypes=(('Album','Album'),('Album','Single'),('Album','Compilation'))
+    albumtypes=models.CharField(max_length=20,choices=albumtypes)
     name=models.CharField(max_length=90)
     release_date=models.DateField()
     duration_ms=models.PositiveBigIntegerField()
@@ -59,6 +59,19 @@ class Show(models.Model):
     def __str__(self):
         return self.name
 
+class Episode(models.Model):
+    name=models.CharField(max_length=90)
+    description=models.TextField(null=True,blank=True)
+    release_date=models.DateField()
+    type=models.CharField(default='show',max_length=20)
+    publisher=models.CharField(max_length=75,)
+    duration_ms=models.PositiveBigIntegerField()
+    explicit=models.BooleanField(default=False)
+    is_playable=models.BooleanField(default=True)
+    language=models.CharField(max_length=5,default='en')
+    
+
+
 class Profil(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE,related_name='profil')
     ulke=[('TR','Türkiye'),('DEU','Germany'),('FR','France'),('UK','United Kingdom'),('US','United States')]
@@ -69,7 +82,7 @@ class Profil(models.Model):
     level=models.CharField(max_length=15,choices=levels,default='FREE',blank=True)
     top_tracks=models.ManyToManyField(Track,related_name='top_tracks')
     top_artists=models.ManyToManyField(Artist,related_name='top_tracks')
-    
+    episodes=models.ManyToManyField(Episode,related_name='episodes')
     def __str__(self):
         return self.user.username
 
@@ -81,6 +94,15 @@ class ProfileFollowedArtists(models.Model):
     followed_artists=models.ManyToManyField(Artist,related_name='followed_artists')
 
 
+class Playlist(models.Model):
+    owner=models.ForeignKey(Profil,on_delete=models.CASCADE,related_name='owner')
+    name=models.CharField(blank=True,null=True,max_length=100)
+    collaborative=models.BooleanField(default=False)
+    description=models.TextField(null=True,blank=True)
+    followers=models.ManyToManyField(Profil,related_name='following_users')
+    public=models.BooleanField(default=True)
+    tracks=models.ManyToManyField(Track,related_name='tracks')
+    type=models.CharField(default='playlist',max_length=10)
 
-
-     
+    def __str__(self):
+        return self.name

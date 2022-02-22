@@ -1,6 +1,6 @@
 
-from .serializers import ProfilTopArtistsSerializer,TrackSerializer,ArtistSerializer,AlbumSerializer,ShowSerializer,ProfilSerializer,ProfilTopTracksSerializer,ProfileFollowedArtistsSerializer
-from spotify.models import Track,Artist,Album,Show,Profil,ProfileFollowedArtists
+from .serializers import ProfilTopArtistsSerializer,TrackSerializer,ArtistSerializer,AlbumSerializer,ShowSerializer,ProfilSerializer,ProfilTopTracksSerializer,ProfileFollowedArtistsSerializer,PlaylistSerializer,EpisodeSerializer
+from spotify.models import Track,Artist,Album,Show,Profil,ProfileFollowedArtists,Playlist
 from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
 
@@ -51,3 +51,24 @@ class ProfileFollowedArtistsListAPIView(ListAPIView):
         queryset=ProfileFollowedArtists.objects.filter(profile=user.profil)
         return queryset    
     serializer_class = ProfileFollowedArtistsSerializer    
+
+
+
+
+class PlaylistAPIViewSet(ModelViewSet):
+    queryset=Playlist.objects.all()
+    serializer_class = PlaylistSerializer   
+
+class UserPlaylistsListAPIView(ListAPIView):
+    def get_queryset(self):
+        user=self.request.user
+        queryset=Playlist.objects.filter(owner=user.profil)
+        return queryset    
+    serializer_class = PlaylistSerializer    
+
+
+
+
+class EpisodeAPIViewSet(ModelViewSet):
+    pass
+
