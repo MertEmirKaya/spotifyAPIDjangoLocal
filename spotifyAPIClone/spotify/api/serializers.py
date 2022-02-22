@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from spotify.models import Track,Artist,Album
+from spotify.models import Track,Artist,Album,Show,Profil,ProfileFollowedArtists
 
 
 class ArtistSerializer(serializers.ModelSerializer):
@@ -11,6 +11,7 @@ class ArtistSerializer(serializers.ModelSerializer):
 
 class TrackSerializer(serializers.ModelSerializer):
     artists=serializers.StringRelatedField(many=True,)
+    album=serializers.StringRelatedField()
     class Meta:
         model=Track
         fields='__all__' 
@@ -22,3 +23,36 @@ class AlbumSerializer(serializers.ModelSerializer):
     class Meta:
         model=Album
         fields='__all__'
+
+
+class ShowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Show
+        fields='__all__'            
+
+class ProfilSerializer(serializers.ModelSerializer):
+    top_tracks=serializers.StringRelatedField(many=True,read_only=True)
+    user=serializers.StringRelatedField()
+    class Meta:
+        model=Profil
+        fields='__all__' 
+
+class ProfilTopTracksSerializer(serializers.ModelSerializer):
+    top_tracks=serializers.StringRelatedField(many=True,read_only=True)
+    class Meta:
+        model=Profil
+        fields=['top_tracks']
+
+
+class ProfilTopArtistsSerializer(serializers.ModelSerializer):
+    top_artists=serializers.StringRelatedField(many=True,read_only=True)
+    class Meta:
+        model=Profil
+        fields=['top_artists']                          
+
+
+class ProfileFollowedArtistsSerializer(serializers.ModelSerializer):
+    followed_artists=serializers.StringRelatedField(many=True,)
+    class Meta:
+        model=ProfileFollowedArtists
+        fields=['followed_artists']            
